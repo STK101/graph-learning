@@ -106,7 +106,7 @@ def log_degree_barrier(X, dist_type='sqeuclidean', alpha=1, beta=1, step=0.5,
     if (dist_type == 'gower'):
       z = np.nan_to_num(gower.gower_matrix(X), copy=True, nan=0.0, posinf= np.inf)
       np.fill_diagonal(z, 0)
-      z = spatial.distance.squareform(D)
+      z = spatial.distance.squareform(z)
     else:
       z = spatial.distance.pdist(X, dist_type)  # Pairwise distances
 
