@@ -11,7 +11,7 @@ import numpy as np
 from scipy import spatial
 from sklearn.covariance import graphical_lasso
 from pyunlocbox import functions, solvers
-
+import gower
 
 def log_degree_barrier(X, dist_type='sqeuclidean', alpha=1, beta=1, step=0.5,
                        w0=None, maxit=1000, rtol=1e-5, retall=False,
@@ -103,7 +103,12 @@ def log_degree_barrier(X, dist_type='sqeuclidean', alpha=1, beta=1, step=0.5,
 
     # Parse X
     N = X.shape[0]
-    z = spatial.distance.pdist(X, dist_type)  # Pairwise distances
+    if (dist_type == 'gower'):
+      z = np.nan_to_num(gower.gower_matrix(X), copy=True, nan=0.0, posinf= np.inf)
+      np.fill_diagonal(D, 0)
+      z = spatial.distance.squareform(D)
+    else:
+      z = spatial.distance.pdist(X, dist_type)  # Pairwise distances
 
     # Parse stepsize
     if (step <= 0) or (step > 1):
