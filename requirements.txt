@@ -1,5 +1,6 @@
 numpy
 scipy
+gower
 scikit-learn
 matplotlib
 networkx
