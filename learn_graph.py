@@ -276,7 +276,7 @@ def l2_degree_reg(X, dist_type='sqeuclidean', alpha=1, s=None, step=0.5,
     else:
         return W
 
-def validation_reg(X, valid_adj,dist_type='sqeuclidean', beta=1, step=0.5,
+def validation_reg(X, valid_adj,dist_type='sqeuclidean', alpha = 1,beta=1, step=0.5,
                        w0=None, maxit=1000, rtol=1e-5, retall=False,
                        verbosity='NONE'):
     r"""
@@ -294,7 +294,7 @@ def validation_reg(X, valid_adj,dist_type='sqeuclidean', beta=1, step=0.5,
         An N-by-M data matrix of N variable observations in an M-dimensional
         space. The learned graph will have N nodes.
     valid_adj : array-like
-        An N-by-N data matrix representing a un-refined version of the
+        An N*N-1/2 data matrix representing a un-refined version of the
         adjacency matrix to be learnt
     dist_type : string
         Type of pairwise distance between variables. See
@@ -393,8 +393,11 @@ def validation_reg(X, valid_adj,dist_type='sqeuclidean', beta=1, step=0.5,
     f1._prox = lambda w, gamma: np.maximum(0, w - (2 * gamma * z))
 
     f2 = functions.func()
-    f2._eval = lambda w: 0.
-    f2._prox = lambda d, gamma: 0.
+    f2._eval = lambda w: - alpha * np.sum(np.log(np.maximum(
+        np.finfo(np.float64).eps, K(w))))
+    f2._prox = lambda d, gamma: np.maximum(
+        0, 0.5 * (d + np.sqrt(d**2 + (4 * alpha * gamma))))
+
 
     f3 = functions.func()
     f3._eval = lambda w: beta * np.sum((w- valid_adj) **2)
