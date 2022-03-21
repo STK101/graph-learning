@@ -364,7 +364,7 @@ def validation_reg(X, valid_adj,dist_type='sqeuclidean', alpha = 1,beta=1, step=
     >>> nx.draw(G_learned, pos=pos)
     >>> plt.title('Learned')
     """
-
+    valid_adj = valid_adj[np.triu_indices(len(valid_adj),k=1)]
     # Parse X
     N = X.shape[0]
     if (dist_type == 'gower'):
